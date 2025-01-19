@@ -1,0 +1,155 @@
+
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بحث عن تريلر الفيلم من YouTube</title>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #124364;
+            color: #fff;
+        }
+
+        .search-container {
+            background-color: #022020;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+
+        .search-container input {
+            padding: 12px;
+            font-size: 18px;
+            font-family: 'Cairo', sans-serif;
+            border: none;
+            border-radius: 5px;
+            width: 250px;
+            outline: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .search-container input:focus {
+            border: 2px solid #011C44;
+        }
+
+        .search-container button {
+            padding: 12px;
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f1c40f;
+            color: #310003;
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .search-container button:hover {
+            background-color: #e67e22;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        .container {
+            background-color: #f2f2f2;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            text-align: left;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container textarea {
+            width: 100%;
+            height: 40px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #ffffff;
+            color: #310003;
+            font-family: 'Cairo', sans-serif;
+            font-weight: bold;
+            resize: none;
+        }
+
+        .container button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .container button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>ابحث عن تريلر الفيلم من YouTube</h1>
+    <div class="search-container">
+        <input type="text" id="searchTerm" placeholder="أدخل اسم الفيلم">
+        <button onclick="searchTrailer()">بحث عن التريلر</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        const youtubeApiKey = 'AIzaSyB_2WwV8txnrP11cna8RIYkFstpgOFCEn4'; // مفتاح API الخاص بـ YouTube
+
+        async function searchTrailer() {
+            const searchTerm = document.getElementById('searchTerm').value;
+            if (!searchTerm) {
+                alert('الرجاء إدخال اسم الفيلم');
+                return;
+            }
+
+            const searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${youtubeApiKey}&part=snippet&q=${searchTerm}+تريلر+فيلم`;
+            try {
+                const response = await fetch(searchUrl);
+                const data = await response.json();
+                const video = data.items.find(item => item.id.kind === 'youtube#video');
+                if (video) {
+                    const trailerUrl = `https://www.youtube.com/watch?v=${video.id.videoId}`;
+                    document.getElementById('result').innerHTML = `
+                        <div class="container">
+                            <h3>رابط تريلر الفيلم:</h3>
+                            <textarea id="trailerLink" readonly>${trailerUrl}</textarea>
+                            <button onclick="copyText('trailerLink')">نسخ الرابط</button>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('result').innerHTML = `<p>لم يتم العثور على تريلر للفيلم.</p>`;
+                }
+            } catch (error) {
+                console.error('حدث خطأ:', error);
+                document.getElementById('result').innerHTML = `<p>حدث خطأ أثناء البحث. الرجاء المحاولة مرة أخرى.</p>`;
+            }
+        }
+
+        function copyText(id) {
+            const textArea = document.getElementById(id);
+            textArea.select();
+            textArea.setSelectionRange(0, 99999); // للهواتف
+            document.execCommand("copy");
+            alert("تم نسخ الرابط إلى الحافظة!");
+        }
+    </script>
+
+</body>
+</html>
